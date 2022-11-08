@@ -10,3 +10,15 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+.casilla-texto{
+    border:0ch;
+}
+
+.form-control:focus{
+    box-shadow: none;
+    border: 1px solid #ced4da;
+}
+
+.deleteButton{
+    color: red;
+}
