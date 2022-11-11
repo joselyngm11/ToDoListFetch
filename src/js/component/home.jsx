@@ -3,23 +3,25 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
+const URL_API = "https://assets.breatheco.de/apis/fake/todos/user"
+
 const Home = ()  => {
 
 	const [inputValue, setInputValue] = useState("")
 	const [tasks, setTasks] = useState([])
 
 	// useEffect(() => {
-	// 	const postToDo = async () =>{
-	// 		let response = await fetch("https://assets.breatheco.de/apis/fake/todos/user/joselyngm",{
-	// 			headers:{
-	// 				"Content-Type":"application/json"
-	// 			},
-	// 			method:"POST",
-	// 			body: JSON.stringify( []) 
-	// 		})
-	// 		let data = await response.json()
-	// 		console.log(data)
-	// }
+		const postToDo = async () =>{
+			let response = await fetch(URL_API+"/joselyngm",{
+				headers:{
+					"Content-Type":"application/json"
+				},
+				method:"POST",
+				body: JSON.stringify( []) 
+			})
+			let data = await response.json()
+			console.log(data)
+	}
 	// postToDo()
 		
 	// }, [])
@@ -48,7 +50,14 @@ const Home = ()  => {
 	const handleDelete = (currentIndex) => {
 		let newTasks = tasks.filter((task, index)=> index!=currentIndex)
 		setTasks(newTasks)
-		putToDo(newTasks)
+		console.log(newTasks)
+		if(newTasks.length == 0){
+			deleteTask()
+			postToDo()
+		}else{
+			putToDo(newTasks)
+		}
+		
 		
 	}
 
@@ -60,8 +69,22 @@ const Home = ()  => {
 		setTasks(newTasks)
 	}
 
+	const deleteTask = async () =>{
+		let response = await fetch(URL_API+"/joselyngm",{
+			headers:{
+				"Content-Type":"application/json"
+			},
+			method:"DELETE",
+		})
+		let data = await response.json()
+		if (response.status == 200){
+			console.log("Eliminado con exito")
+		}
+	}
+
+
 	const getToDo = async () =>{
-		let response = await fetch("https://assets.breatheco.de/apis/fake/todos/user/joselyngm",{
+		let response = await fetch(URL_API+"/joselyngm",{
 			headers:{
 				"Content-Type":"application/json"
 			},
@@ -78,7 +101,7 @@ const Home = ()  => {
 
 	const putToDo = async (newTasks) =>{
 		
-		let response = await fetch("https://assets.breatheco.de/apis/fake/todos/user/joselyngm",{
+		let response = await fetch(URL_API+"/joselyngm",{
 			headers:{
 				"Content-Type":"application/json"
 			},
@@ -87,8 +110,7 @@ const Home = ()  => {
 		})
 		let data = await response.json()
 		if (response.ok){
-			console.log(data)
-			console.log("holaaaaaaaa")
+			// console.log(data)
 			getToDo()
 		}
 	}
@@ -97,9 +119,13 @@ const Home = ()  => {
 	// }, [setTasks])
 
   	return (
-		<InputGroup className="container">
-			<div className="col-12">
+		<InputGroup className="container justify-content-center">
+			<div className="titleBox">
+				<h1 className="title" >To Dos</h1>
+			</div>
+			<div className="col-12 toDo">
 				<Form.Control
+				className="inputBoxToDo"
 				placeholder="What needs to be done?"
 				aria-label="Recipient's username"
 				aria-describedby="basic-addon2"
@@ -114,8 +140,8 @@ const Home = ()  => {
 						tasks.map((task,index)=>{
 							return(
 								<ListGroup.Item key={index} 
-								className="d-flex justify-content-between align-items-start">
-									<div className="ms-2 me-auto">
+								className="d-flex justify-content-between align-items-start inputBoxToDo">
+									<div className="ms-2 me-auto taskElement">
 										{task.label}
         							</div>
 									<div onClick={(e) => handleDelete(index)}>
